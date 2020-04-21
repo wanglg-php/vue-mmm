@@ -13,8 +13,8 @@
           <span>{{item.distance}}</span>
         </div>
         <div class="card">
-          <div></div>
-          <div>{{item.tag.vipTag}}</div>
+         
+          <div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class="key|classCard">{{key|forcard}}</div>
         </div>
       </li>
      
@@ -28,6 +28,39 @@ export default {
     return {
       cinemaList: []
     };
+  },
+  filters:{
+    forcard(key){
+      var card=[
+        {key:'allowRefund',value:'改签'},
+        {key:'endorse',value:'退'},
+        {key:'sell',value:'折扣卡'},
+        {key:'snack',value:'小吃'}
+      ];
+      for (let i = 0; i < card.length; i++) {
+        if(card[i].key===key){
+          return card[i].value;
+        };
+        
+      }  
+      return '';
+    },
+    classCard(key){
+       var card=[
+        {key:'allowRefund',value:'bl'},
+        {key:'endorse',value:'bl'},
+        {key:'sell',value:'or'},
+        {key:'snack',value:'or'}
+      ];
+      for (let i = 0; i < card.length; i++) {
+        if(card[i].key===key){
+          return card[i].value;
+        };
+        
+      }  
+      return '';
+
+    }
   },
   mounted() {
 	  this.axios.get('api/cinemaList?cityId=10').then((res=>{
