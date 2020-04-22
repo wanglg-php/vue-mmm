@@ -37,30 +37,29 @@ export default {
     };
   },
   mounted() {
-    this.axios.get("/api/citylist").then(res => {
-      // console.log("msg", res.data.data.cts);
-      if (res.data.data.cts) {
-        var { citylist, hotlist } = this.formatCityList(res.data.data.cts);
+    this.axios.get("/api/cityList").then(res => {
+      console.log("msg", res.data.msg);
+      if (res.data.msg == "ok") {
+        var { citylist, hotlist } = this.formatCityList(res.data.data.cities);
         this.citylist = citylist;
-        //this.hotlist = hotlist;
+        this.hotlist = hotlist;
       }
     });
   },
   methods: {
 	  toindex(index){
 		  var h2 = this.$refs.city_sort.getElementsByTagName("h2");
-      //this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
-      this.$refs.city_List.toScrollTop(-h2[index].offsetTop);
+		  this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
 	  },
     formatCityList(cities) {
       var citylist = [];
       var hotlist = [];
 
-      // for (let i = 0; i < cities.length; i++) {
-      //   if (cities[i].isHot === 1) {
-      //     hotlist.push(cities[i]);
-      //   }
-      // }
+      for (let i = 0; i < cities.length; i++) {
+        if (cities[i].isHot === 1) {
+          hotlist.push(cities[i]);
+        }
+      }
 
       for (var i = 0; i < cities.length; i++) {
         var firstletter = cities[i].py.substring(0, 1).toUpperCase();

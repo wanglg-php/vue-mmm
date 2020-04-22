@@ -1,5 +1,6 @@
 <template>
   <div class="cinema_body">
+    <Scroller>
     <ul>
       <li v-for="item in cinemaList" :key="item.id">
         <div >
@@ -19,6 +20,7 @@
       </li>
      
     </ul>
+     </Scroller>
   </div>
 </template>
 <script>
@@ -63,9 +65,9 @@ export default {
     }
   },
   mounted() {
-	  this.axios.get('api/cinemaList?cityId=10').then((res=>{
-		  if(res.data.msg =='ok' && res.data.data.cinemas){
-			this.cinemaList = res.data.data.cinemas
+	  this.axios.get('api/cinemaList').then((res=>{
+		  if(res.data.data.msg =='ok' && res.data.data.data.cinemas){
+			this.cinemaList = res.data.data.data.cinemas
 			console.log(this.cinemaList)
 		  }
 	  }));
