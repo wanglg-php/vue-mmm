@@ -1,8 +1,9 @@
 <template>
 <div class="movie_body">
+	<Scroller>
 				<ul>
 					<li v-for="item in comingList" :key="item.id">
-						<div class="pic_show"><img :src="item.img"></div>
+						<div class="pic_show"><img :src="item.img|setWH(68.89)"></div>
 						<div class="info_list">
 							<h2>{{item.nm}}</h2>
 							<p><span class="person">{{item.wish}}</span> 人想看</p>
@@ -15,6 +16,7 @@
 					</li>
 					
 				</ul>
+				</Scroller>
 			</div>
 </template>
 <script>
@@ -26,10 +28,10 @@ export default {
 		}
 	},
 	mounted(){
-		this.axios.get('/api/movieComingList?cityId=10').then((res=>{
-			console.log(res.data)
-			if(res.data.msg === 'ok'){
-				this.comingList = res.data.data.comingList
+		this.axios.get('/api/comming').then((res=>{
+			
+			if(res.data.data.coming){
+				this.comingList = res.data.data.coming
 			}
 		}));
 	},
