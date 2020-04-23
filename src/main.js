@@ -14,6 +14,9 @@ Vue.filter('setWH',(url,arg)=>{
 import Scroller from './components/Scroll'
 Vue.component('Scroller',Scroller) ;//注册全局组件
 
+import Loading from '@/components/Loading'
+Vue.component('loadings',Loading)
+
 
 
 new Vue({

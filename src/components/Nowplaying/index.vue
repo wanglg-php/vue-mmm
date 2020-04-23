@@ -1,6 +1,7 @@
 <template>
   <div class="movie_body">
-    <Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+    <loadings v-if="isLoading"/>
+    <Scroller v-else  :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
       <ul>
         <li class="pwm">{{pullDownMsg}}</li>
         <li v-for="item in movelist" :key="item.id">
@@ -30,14 +31,17 @@ export default {
 	data(){
 		return {
 			movelist:[],
-			pullDownMsg:''
+      pullDownMsg:'',
+      isLoading:true
 		}
 	},
 	mounted(){
 		this.axios.get("/api/movieOnInfoList").then((res=>{
-			var msg = res.data.data.msg;
+      var msg = res.data.data.msg;
+      
 			if(msg ==='ok'){
-			this.movelist = res.data.data.data.movieList;
+      this.movelist = res.data.data.data.movieList;
+      this.isLoading=false
 			// this.$nextTick();
 			// var bs = new bsscroll(this.$refs.reference,{
 			// 	tap:true,
@@ -81,7 +85,6 @@ export default {
 		handleToScroll(pos){
 			console.log('ccccscroll');
 			if(pos.y>30){
-				
 				this.pullDownMsg='正在更新。。'
 			}
 		},
@@ -89,13 +92,15 @@ export default {
 			console.log('ccctouchEnd');
 			if(pos.y>30){
 					this.axios.get("/api/movieOnInfoList").then((res=>{
+            
 						var msg = res.data.data.msg;
 						if(msg ==='ok'){
-							this.pullDownMsg='更新成功';
+              this.pullDownMsg='更新成功';
 							setTimeout(()=>{
 								this.movelist = res.data.data.data.movieList;
 								console.log('touchEnd');
-								this.pullDownMsg = '';
+                this.pullDownMsg = '';
+               
 							},1000)
 							
 						}
