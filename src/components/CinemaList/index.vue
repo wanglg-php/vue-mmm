@@ -65,10 +65,10 @@ export default {
     }
   },
   mounted() {
-	  this.axios.get('api/cinemaList').then((res=>{
-		  if(res.data.data.msg =='ok' && res.data.data.data.cinemas){
-			this.cinemaList = res.data.data.data.cinemas
-			console.log(this.cinemaList)
+     var cityId = this.$store.state.city.id;
+	  this.axios.get('/api/cinemaList?cityId='+cityId).then((res=>{
+		  if(res.data.msg =='ok' && res.data.data.cinemas){
+			this.cinemaList = res.data.data.cinemas
 		  }
 	  }));
   }

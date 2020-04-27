@@ -6,7 +6,7 @@
           <div class="city_hot">
             <h2>热门城市</h2>
             <ul class="clearfix">
-              <li v-for="hot in hotlist" :key="hot.id">{{hot.nm}}</li>
+              <li v-for="hot in hotlist" :key="hot.id" @tap="handleToCity(hot.nm,hot.id)">{{hot.nm}}</li>
             </ul>
           </div>
           <div class="city_sort" ref="city_sort">
@@ -48,17 +48,18 @@ export default {
     var citylist = window.localStorage.getItem("citylist");
     var hotlist = window.localStorage.getItem("hotlist");
     if (citylist && hotlist) {
+      console.log( JSON.parse(citylist))
       this.citylist = JSON.parse(citylist);
       this.hotlist = JSON.parse(hotlist);
     }
     this.axios.get("/api/citylist").then(res => {
       // console.log("msg", res.data.data.cts);
-      if (res.data.data.cts) {
-        var { citylist, hotlist } = this.formatCityList(res.data.data.cts);
+      if (res.data.data.cities) {
+        var { citylist, hotlist } = this.formatCityList(res.data.data.cities);
         this.citylist = citylist;
         this.hotlist = hotlist;
-        window.localStorage.setItem("citylist", citylist);
-        window.localStorage.setItem("hotlist", hotlist);
+        window.localStorage.setItem("citylist", JSON.stringify(citylist));
+        window.localStorage.setItem("hotlist", JSON.stringify(hotlist));
       }
     });
   },
@@ -79,11 +80,11 @@ export default {
       var citylist = [];
       var hotlist = [];
 
-      // for (let i = 0; i < cities.length; i++) {
-      //   if (cities[i].isHot === 1) {
-      //     hotlist.push(cities[i]);
-      //   }
-      // }
+      for (let i = 0; i < cities.length; i++) {
+        if (cities[i].isHot === 1) {
+          hotlist.push(cities[i]);
+        }
+      }
 
       for (var i = 0; i < cities.length; i++) {
         var firstletter = cities[i].py.substring(0, 1).toUpperCase();

@@ -1,7 +1,7 @@
 <template>
   <div class="movie_body">
-    <loadings v-if="isLoading"/>
-    <Scroller v-else  :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+    <loadings v-if="isLoading" />
+    <Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
       <ul>
         <li class="pwm">{{pullDownMsg}}</li>
         <li v-for="item in movelist" :key="item.id">
@@ -27,88 +27,93 @@
 //import bsscroll from 'better-scroll';
 
 export default {
-	name:'nowpaying',
-	data(){
-		return {
-			movelist:[],
-      pullDownMsg:'',
-      isLoading:true
-		}
-	},
-	mounted(){
-		this.axios.get("/api/movieOnInfoList").then((res=>{
-      var msg = res.data.data.msg;
-      
-			if(msg ==='ok'){
-      this.movelist = res.data.data.data.movieList;
-      this.isLoading=false
-			// this.$nextTick();
-			// var bs = new bsscroll(this.$refs.reference,{
-			// 	tap:true,
-			// 	probeType:1
-			// });
-			// bs.on('scroll',(pos)=>{
-			// 	//console.log('scroll');
-			// 	if(pos.y>30){
-			// 		console.log('scroll');
-			// 		this.pullDownMsg='正在更新。。'
-			// 	}
-			// });
-			// bs.on('touchEnd',(pos)=>{
-			// 	//console.log('touchEnd');
-				
-			// 	if(pos.y>30){
-			// 		this.axios.get("/api/movieOnInfoList?cityId=11").then((res=>{
-			// 			var msg = res.data.msg;
-			// 			if(msg ==='ok'){
-			// 				this.pullDownMsg='更新成功';
-			// 				setTimeout(()=>{
-			// 				this.movelist = res.data.data.movieList;
-			// 				console.log('touchEnd');
-			// 				this.pullDownMsg = '';
-			// 				},1000)
-							
-			// 			}
-			// 		}))
-			// 	}
-				
-				
-			// })
-			
-			}
-		}));
-	},
-	methods:{
-		handleToDetail(){
-			console.log(111)
-		},
-		handleToScroll(pos){
-			console.log('ccccscroll');
-			if(pos.y>30){
-				this.pullDownMsg='正在更新。。'
-			}
-		},
-		handleToTouchEnd(pos){
-			console.log('ccctouchEnd');
-			if(pos.y>30){
-					this.axios.get("/api/movieOnInfoList").then((res=>{
-            
-						var msg = res.data.data.msg;
-						if(msg ==='ok'){
-              this.pullDownMsg='更新成功';
-							setTimeout(()=>{
-								this.movelist = res.data.data.data.movieList;
-								console.log('touchEnd');
-                this.pullDownMsg = '';
-               
-							},1000)
-							
-						}
-					}))
-				}
-		}
-	}
-}
+  name: "nowpaying",
+  data() {
+    return {
+      movelist: [],
+      pullDownMsg: "",
+      isLoading: true,
+      prevCityId: -1
+    };
+  },
+  activated() {
+    var cityId = this.$store.state.city.id;
+    console.log(this.prevCityId,cityId);
+    if (this.prevCityId === cityId) {
+      return;
+    }
+    //api/movieOnInfoList?cityId=10
+    this.axios.get("/api/movieOnInfoList?cityId=" + cityId).then(res => {
+      console.log(res.data.msg);
+      this.isLoading = true;
+      var msg = res.data.msg;
+
+      if (msg === "ok") {
+        this.movelist = res.data.data.movieList;
+        this.isLoading = false;
+        this.prevCityId = cityId
+        // this.$nextTick();
+        // var bs = new bsscroll(this.$refs.reference,{
+        // 	tap:true,
+        // 	probeType:1
+        // });
+        // bs.on('scroll',(pos)=>{
+        // 	//console.log('scroll');
+        // 	if(pos.y>30){
+        // 		console.log('scroll');
+        // 		this.pullDownMsg='正在更新。。'
+        // 	}
+        // });
+        // bs.on('touchEnd',(pos)=>{
+        // 	//console.log('touchEnd');
+
+        // 	if(pos.y>30){
+        // 		this.axios.get("/api/movieOnInfoList?cityId=11").then((res=>{
+        // 			var msg = res.data.msg;
+        // 			if(msg ==='ok'){
+        // 				this.pullDownMsg='更新成功';
+        // 				setTimeout(()=>{
+        // 				this.movelist = res.data.data.movieList;
+        // 				console.log('touchEnd');
+        // 				this.pullDownMsg = '';
+        // 				},1000)
+
+        // 			}
+        // 		}))
+        // 	}
+
+        // })
+      }
+    });
+  },
+  methods: {
+    handleToDetail() {
+      console.log(111);
+    },
+    handleToScroll(pos) {
+      console.log("ccccscroll");
+      if (pos.y > 30) {
+        this.pullDownMsg = "正在更新。。";
+      }
+    },
+    handleToTouchEnd(pos) {
+      if (pos.y > 50) {
+        var cityId = this.$store.state.city.id;
+        this.axios.get("/api/movieOnInfoList?cityId=" +  cityId).then(res => {
+          var msg = res.data.msg;
+          if (msg === "ok") {
+            this.pullDownMsg = "更新成功";
+            setTimeout(() => {
+              this.movelist = res.data.data.movieList;
+              console.log("touchEnd");
+              this.pullDownMsg = "";
+            }, 1000);
+          }
+        });
+      }
+    }
+  }
+};
 </script>
 <style scoped>
 #content .movie_body {
