@@ -1,5 +1,5 @@
 const state = {
-    nm: '北京1',
+    nm: '北京',
     id: 1
 };
 const actions = {
