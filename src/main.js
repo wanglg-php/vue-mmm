@@ -3,7 +3,21 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import axios from 'axios'
+Vue.prototype.axios = axios;
 Vue.config.productionTip = false
+
+Vue.filter('setWH',(url,arg)=>{
+  return url.replace(/w\.h/,arg)
+});
+
+import Scroller from './components/Scroll'
+Vue.component('Scroller',Scroller) ;//注册全局组件
+
+import Loading from '@/components/Loading'
+Vue.component('loadings',Loading)
+
+
 
 new Vue({
   router,
